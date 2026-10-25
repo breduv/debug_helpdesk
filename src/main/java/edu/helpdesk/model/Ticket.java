@@ -1,7 +1,6 @@
 package edu.helpdesk.model;
 
 import java.time.LocalDateTime;
-import java.util.EnumSet;
 import java.util.Set;
 
 public class Ticket {

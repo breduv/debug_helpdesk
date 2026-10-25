@@ -59,7 +59,7 @@ public class JdbcTicketRepository implements TicketRepository {
 
     @Override
     public List<Ticket> findByStatus(TicketStatus status) {
-        String sql = "SELECT * FROM tickets WHERE priority = ? ORDER BY id";
+        String sql = "SELECT * FROM tickets WHERE status = ? ORDER BY id";
         return list(sql, ps -> ps.setString(1, status.name()));
     }
 

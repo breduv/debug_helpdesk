@@ -1,15 +1,16 @@
 # Отчёт по Help Desk Debug Lab
 
-**ФИО:**  
-**Группа:**  
+**ФИО:** Миронов Глеб Максимович 
+**Группа:** 2024-ФГиИБ-ИБ-2б
 **Вариант самостоятельной работы:**  
 
 ## 1. Окружение
 
-- Java:
-- Maven:
-- Docker:
-- PostgreSQL:
+- Java: Microsoft OpenJDK 17.0.20.1 LTS.
+- Maven: 3.10.0.
+- Docker: 29.8.2 (Docker Desktop 4.95.0).
+- Docker Compose: 5.6.0.
+- PostgreSQL: 18.6.
 
 ## 2. Схема БД
 
@@ -17,7 +18,7 @@
 
 ## 3. Исходная диагностика
 
-Вставьте вывод `Diagnostics` до исправлений.
+![alt text](image\image.png)
 
 ## 4. Найденные дефекты
 

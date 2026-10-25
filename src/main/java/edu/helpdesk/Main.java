@@ -21,7 +21,7 @@ public class Main {
         TicketService service = new TicketService(tickets, users, comments);
 
         System.out.println("=== HELP DESK / DEBUG LAB ===");
-        System.out.println("Учебный проект. Некоторые сценарии работают неверно — это часть задания.\n");
+        System.out.println("Учебный проект. Некоторые сценарии работают неверно - это часть задания.\n");
 
         try (Scanner scanner = new Scanner(System.in)) {
             boolean running = true;
@@ -38,8 +38,7 @@ public class Main {
                         }
                         case "3" -> {
                             System.out.print("Статус (NEW/IN_PROGRESS/RESOLVED/CLOSED): ");
-                            service.findByStatus(TicketStatus.valueOf(scanner.nextLine().trim().toUpperCase()))
-                                    .forEach(System.out::println);
+                            service.findByStatus(TicketStatus.valueOf(scanner.nextLine().trim().toUpperCase())).forEach(System.out::println);
                         }
                         case "4" -> {
                             System.out.print("Фрагмент темы: ");
@@ -105,16 +104,16 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("""
-                1 — список заявок
-                2 — заявка по ID
-                3 — заявки по статусу
-                4 — поиск по теме
-                5 — назначить исполнителя
-                6 — добавить комментарий
-                7 — комментарии заявки
-                8 — изменить статус
-                9 — создать заявку
-                0 — выход
+                1 - список заявок
+                2 - заявка по ID
+                3 - заявки по статусу
+                4 - поиск по теме
+                5 - назначить исполнителя
+                6 - добавить комментарий
+                7 - комментарии заявки
+                8 - изменить статус
+                9 - создать заявку
+                0 - выход
                 """);
     }
 }

@@ -1,7 +1,6 @@
 package edu.helpdesk;
 
 import edu.helpdesk.config.Database;
-import edu.helpdesk.exception.DataAccessException;
 import edu.helpdesk.model.TicketStatus;
 import edu.helpdesk.repository.CommentRepository;
 import edu.helpdesk.repository.TicketRepository;
@@ -26,7 +25,7 @@ public class Diagnostics {
 
     private void run() {
         System.out.println("=== HELP DESK DIAGNOSTICS ===");
-        System.out.println("PASS означает соответствие ожидаемому поведению, FAIL — обнаруженный дефект.\n");
+        System.out.println("PASS означает соответствие ожидаемому поведению, FAIL - обнаруженный дефект.\n");
 
         check("Подключение к БД и исходные 3 заявки", this::databaseAndSeed);
         check("Заявка #1 имеет тему «Не работает Wi-Fi»", this::mappingTitle);
