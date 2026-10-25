@@ -31,7 +31,14 @@ public class TicketService {
 
     public void assignTicket(long ticketId, long assigneeId) {
         tickets.findById(ticketId).orElseThrow(() -> new IllegalArgumentException("Заявка не найдена"));
-        users.findById(assigneeId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+        User assignee = users.findById(assigneeId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+
+        if (assignee.getRole() == UserRole.CUSTOMER) {
+            throw new IllegalArgumentException(
+                    "CUSTOMER нельзя назначить исполнителем"
+            );
+        }
+
         int updated = tickets.assign(ticketId, assigneeId);
         if (updated != 1) {
             throw new IllegalStateException("Ожидалось изменение одной заявки, изменено: " + updated);
