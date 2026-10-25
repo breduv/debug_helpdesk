@@ -65,8 +65,8 @@ public class JdbcTicketRepository implements TicketRepository {
 
     @Override
     public List<Ticket> searchByTitle(String query) {
-        String sql = "SELECT * FROM tickets WHERE LOWER(title) = LOWER(?) ORDER BY id";
-        return list(sql, ps -> ps.setString(1, query));
+        String sql = "SELECT * FROM tickets WHERE LOWER(title) LIKE LOWER(?) ORDER BY id";
+        return list(sql, ps -> ps.setString(1, "%" + query + "%"));
     }
 
     @Override
