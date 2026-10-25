@@ -147,8 +147,8 @@ public class Diagnostics {
         reset();
         boolean rejected = false;
         try (Connection c = Database.getConnection(); PreparedStatement ps = c.prepareStatement("""
-                INSERT INTO tickets(title, description, status, priority, author_id, category_id)
-                VALUES ('Проверка', 'Проверка ограничения', 'NEW', 'SUPER', 1, 1)
+                INSERT INTO tickets(title, description, status, priority, author_id, category_id, due_at)
+                VALUES ('Проверка', 'Проверка ограничения', 'NEW', 'SUPER', 1, 1, CURRENT_TIMESTAMP + INTERVAL '1 hour')
                 """)) {
             ps.executeUpdate();
         } catch (Exception e) {
@@ -171,10 +171,10 @@ public class Diagnostics {
                     ('Пётр Соколов', 'petr@example.com', 'CUSTOMER', 2)
                     """);
             st.execute("""
-                    INSERT INTO tickets(title, description, status, priority, author_id, assignee_id, category_id) VALUES
-                    ('Не работает Wi-Fi', 'Ноутбук подключается к сети, но интернет недоступен', 'NEW', 'HIGH', 1, NULL, 1),
-                    ('Принтер недоступен', 'Сетевой принтер не отвечает на задания печати', 'IN_PROGRESS', 'MEDIUM', 5, 2, 2),
-                    ('CRM закрывается при запуске', 'После обновления CRM завершается сразу после авторизации', 'RESOLVED', 'CRITICAL', 1, 3, 3)
+                    INSERT INTO tickets(title, description, status, priority, author_id, assignee_id, category_id, due_at) VALUES
+                    ('Не работает Wi-Fi', 'Ноутбук подключается к сети, но интернет недоступен', 'NEW', 'HIGH', 1, NULL, 1, CURRENT_TIMESTAMP + INTERVAL '4 hours'),
+                    ('Принтер недоступен', 'Сетевой принтер не отвечает на задания печати', 'IN_PROGRESS', 'MEDIUM', 5, 2, 2, CURRENT_TIMESTAMP + INTERVAL '8 hours'),
+                    ('CRM закрывается при запуске', 'После обновления CRM завершается сразу после авторизации', 'RESOLVED', 'CRITICAL', 1, 3, 3, CURRENT_TIMESTAMP + INTERVAL '1 hour')
                     """);
             st.execute("""
                     INSERT INTO ticket_comments(ticket_id, author_id, text) VALUES

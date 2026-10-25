@@ -88,6 +88,14 @@ public class Main {
                             Long categoryId = categoryRaw.isBlank() ? null : Long.parseLong(categoryRaw);
                             System.out.println(service.createTicket(title, description, priority, authorId, categoryId));
                         }
+                        case "10" -> {
+                            var overdue = service.findOverdue();
+                            if (overdue.isEmpty()) {
+                                System.out.println("Просроченных заявок нет.");
+                            } else {
+                                overdue.forEach(System.out::println);
+                            }
+                        }
                         case "0" -> running = false;
                         default -> System.out.println("Неизвестная команда.");
                     }
@@ -113,6 +121,7 @@ public class Main {
                 7 - комментарии заявки
                 8 - изменить статус
                 9 - создать заявку
+                10 - просроченные заявки
                 0 - выход
                 """);
     }

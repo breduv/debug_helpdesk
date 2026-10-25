@@ -26,6 +26,7 @@ CREATE TABLE tickets (
     author_id BIGINT NOT NULL REFERENCES users(id),
     assignee_id BIGINT REFERENCES users(id),
     category_id BIGINT REFERENCES categories(id),
+    due_at TIMESTAMPTZ NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -50,4 +51,6 @@ CREATE TABLE ticket_status_history (
 CREATE INDEX idx_tickets_status ON tickets(status);
 CREATE INDEX idx_tickets_assignee ON tickets(assignee_id);
 CREATE INDEX idx_tickets_category ON tickets(category_id);
+CREATE INDEX idx_tickets_overdue ON tickets(due_at, id)
+    WHERE status NOT IN ('RESOLVED', 'CLOSED');
 CREATE INDEX idx_comments_ticket ON ticket_comments(ticket_id);

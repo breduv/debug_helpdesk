@@ -1,9 +1,13 @@
 package edu.helpdesk.model;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 public class Ticket {
+    private static final DateTimeFormatter DEADLINE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm XXX");
     private final long id;
     private final String title;
     private final String description;
@@ -14,6 +18,7 @@ public class Ticket {
     private final Long categoryId;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final OffsetDateTime dueAt;
 
     public Ticket(long id,
                   String title,
@@ -24,7 +29,8 @@ public class Ticket {
                   Long assigneeId,
                   Long categoryId,
                   LocalDateTime createdAt,
-                  LocalDateTime updatedAt) {
+                  LocalDateTime updatedAt,
+                  OffsetDateTime dueAt) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -35,6 +41,7 @@ public class Ticket {
         this.categoryId = categoryId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.dueAt = dueAt;
     }
 
     public boolean canTransitionTo(TicketStatus next) {
@@ -66,10 +73,12 @@ public class Ticket {
     public Long getCategoryId() { return categoryId; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public OffsetDateTime getDueAt() { return dueAt; }
 
     @Override
     public String toString() {
         return "#" + id + " [" + status + "/" + priority + "] " + title
-                + " | author=" + authorId + " | assignee=" + assigneeId;
+                + " | author=" + authorId + " | assignee=" + assigneeId
+                + " | срок=" + dueAt.atZoneSameInstant(ZoneId.systemDefault()).format(DEADLINE_FORMAT);
     }
 }

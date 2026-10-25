@@ -8,6 +8,7 @@ import edu.helpdesk.model.TicketStatus;
 import edu.helpdesk.repository.TicketRepository;
 
 import java.sql.*;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +16,11 @@ import java.util.Optional;
 public class JdbcTicketRepository implements TicketRepository {
 
     @Override
-    public Ticket create(String title, String description, TicketPriority priority, long authorId, Long categoryId) {
+    public Ticket create(String title, String description, TicketPriority priority, long authorId,
+                         Long categoryId, OffsetDateTime dueAt) {
         String sql = """
-                INSERT INTO tickets(title, description, status, priority, author_id, category_id)
-                VALUES (?, ?, 'NEW', ?, ?, ?)
+                INSERT INTO tickets(title, description, status, priority, author_id, category_id, due_at)
+                VALUES (?, ?, 'NEW', ?, ?, ?, ?)
                 RETURNING *
                 """;
         try (Connection connection = Database.getConnection();
@@ -28,6 +30,7 @@ public class JdbcTicketRepository implements TicketRepository {
             ps.setString(3, priority.name());
             ps.setLong(4, authorId);
             if (categoryId == null) ps.setNull(5, Types.BIGINT); else ps.setLong(5, categoryId);
+            ps.setObject(6, dueAt);
             try (ResultSet rs = ps.executeQuery()) {
                 rs.next();
                 return mapTicket(rs);
@@ -67,6 +70,16 @@ public class JdbcTicketRepository implements TicketRepository {
     public List<Ticket> searchByTitle(String query) {
         String sql = "SELECT * FROM tickets WHERE LOWER(title) LIKE LOWER(?) ORDER BY id";
         return list(sql, ps -> ps.setString(1, "%" + query + "%"));
+    }
+
+    @Override
+    public List<Ticket> findOverdue(OffsetDateTime now) {
+        String sql = """
+                SELECT * FROM tickets
+                WHERE due_at < ? AND status NOT IN ('RESOLVED', 'CLOSED')
+                ORDER BY due_at, id
+                """;
+        return list(sql, ps -> ps.setObject(1, now));
     }
 
     @Override
@@ -153,7 +166,8 @@ public class JdbcTicketRepository implements TicketRepository {
                 nullableLong(rs, "assignee_id"),
                 nullableLong(rs, "category_id"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
-                rs.getTimestamp("updated_at").toLocalDateTime()
+                rs.getTimestamp("updated_at").toLocalDateTime(),
+                rs.getObject("due_at", OffsetDateTime.class)
         );
     }
 

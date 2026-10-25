@@ -4,6 +4,7 @@ import edu.helpdesk.model.Ticket;
 import edu.helpdesk.model.TicketPriority;
 import edu.helpdesk.model.TicketStatus;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,8 @@ public interface TicketRepository {
                   String description,
                   TicketPriority priority,
                   long authorId,
-                  Long categoryId);
+                  Long categoryId,
+                  OffsetDateTime dueAt);
 
     Optional<Ticket> findById(long id);
 
@@ -21,6 +23,8 @@ public interface TicketRepository {
     List<Ticket> findByStatus(TicketStatus status);
 
     List<Ticket> searchByTitle(String query);
+
+    List<Ticket> findOverdue(OffsetDateTime now);
 
     int assign(long ticketId, long assigneeId);
 
