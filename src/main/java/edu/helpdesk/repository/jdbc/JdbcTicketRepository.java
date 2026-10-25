@@ -71,10 +71,11 @@ public class JdbcTicketRepository implements TicketRepository {
 
     @Override
     public int assign(long ticketId, long assigneeId) {
-        String sql = "UPDATE tickets SET assignee_id = ?, updated_at = CURRENT_TIMESTAMP";
+        String sql = "UPDATE tickets SET assignee_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, assigneeId);
+            ps.setLong(2, ticketId);
             return ps.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка назначения исполнителя", e);
