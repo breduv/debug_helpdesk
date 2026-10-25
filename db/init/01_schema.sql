@@ -6,7 +6,7 @@ CREATE TABLE departments (
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
     full_name VARCHAR(150) NOT NULL,
-    email VARCHAR(200) NOT NULL,
+    email VARCHAR(200) NOT NULL UNIQUE,
     role VARCHAR(20) NOT NULL CHECK (role IN ('CUSTOMER', 'SUPPORT', 'ADMIN')),
     department_id BIGINT REFERENCES departments(id),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

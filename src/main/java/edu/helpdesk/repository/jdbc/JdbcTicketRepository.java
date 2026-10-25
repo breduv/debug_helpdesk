@@ -93,26 +93,38 @@ public class JdbcTicketRepository implements TicketRepository {
                 VALUES (?, ?, ?, ?)
                 """;
 
-        try (Connection connection = Database.getConnection();
-             PreparedStatement ps = connection.prepareStatement(update)) {
-            ps.setString(1, newStatus.name());
-            ps.setLong(2, ticketId);
-            if (ps.executeUpdate() != 1) {
-                throw new SQLException("Заявка не найдена: " + ticketId);
+        try (Connection connection = Database.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement updatePs = connection.prepareStatement(update);
+                PreparedStatement historyPs = connection.prepareStatement(history)) {
+
+                updatePs.setString(1, newStatus.name());
+                updatePs.setLong(2, ticketId);
+
+                if (updatePs.executeUpdate() != 1) {
+                    throw new SQLException("Заявка не найдена: " + ticketId);
+                }
+
+                historyPs.setLong(1, ticketId);
+                historyPs.setString(2, oldStatus.name());
+                historyPs.setString(3, newStatus.name());
+                historyPs.setLong(4, changedBy);
+                historyPs.executeUpdate();
+
+                connection.commit();
+            } catch (SQLException | RuntimeException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                throw e;
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Не удалось изменить статус", e);
-        }
-
-        try (Connection connection = Database.getConnection();
-             PreparedStatement ps = connection.prepareStatement(history)) {
-            ps.setLong(1, ticketId);
-            ps.setString(2, oldStatus.name());
-            ps.setString(3, newStatus.name());
-            ps.setLong(4, changedBy);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DataAccessException("Не удалось записать историю статуса", e);
+            throw new DataAccessException(
+                    "Не удалось изменить статус и записать историю", e
+            );
         }
     }
 
