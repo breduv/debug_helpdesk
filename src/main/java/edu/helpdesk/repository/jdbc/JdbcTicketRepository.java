@@ -132,7 +132,7 @@ public class JdbcTicketRepository implements TicketRepository {
     private Ticket mapTicket(ResultSet rs) throws SQLException {
         return new Ticket(
                 rs.getLong("id"),
-                rs.getString("description"),
+                rs.getString("title"),
                 rs.getString("description"),
                 TicketStatus.valueOf(rs.getString("status")),
                 TicketPriority.valueOf(rs.getString("priority")),

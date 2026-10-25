@@ -42,7 +42,7 @@ public class Ticket {
             return true;
         }
         return switch (status) {
-            case NEW -> Set.of(TicketStatus.IN_PROGRESS, TicketStatus.RESOLVED).contains(next);
+            case NEW -> Set.of(TicketStatus.IN_PROGRESS).contains(next);
             case IN_PROGRESS -> Set.of(TicketStatus.RESOLVED, TicketStatus.NEW).contains(next);
             case RESOLVED -> Set.of(TicketStatus.CLOSED, TicketStatus.IN_PROGRESS).contains(next);
             case CLOSED -> false;
