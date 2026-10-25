@@ -33,13 +33,15 @@ public class JdbcCommentRepository implements CommentRepository {
 
     @Override
     public List<TicketComment> findByTicketId(long ticketId) {
-        String sql = "SELECT * FROM ticket_comments ORDER BY created_at, id";
+        String sql = "SELECT * FROM ticket_comments WHERE ticket_id = ? ORDER BY created_at";
         List<TicketComment> result = new ArrayList<>();
         try (Connection connection = Database.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) result.add(map(rs));
-            return result;
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, ticketId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) result.add(map(rs));
+                return result;
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Не удалось получить комментарии", e);
         }
