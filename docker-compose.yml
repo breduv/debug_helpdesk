@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:18
+    container_name: helpdesk-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-helpdesk}
+      POSTGRES_USER: ${POSTGRES_USER:-helpdesk}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-helpdesk}
+    ports:
+      - "5432:5432"
+    volumes:
+      - helpdesk_pgdata:/var/lib/postgresql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-helpdesk} -d ${POSTGRES_DB:-helpdesk}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  helpdesk_pgdata:
